@@ -64,7 +64,7 @@ void gpuTenengrad(const Mat &h_oriImg) {
     timer.Stop();
 
     printf("Gpu elapsed time: %f\n", timer.Elapsed());
-    printf("res = %f\n", (float)sum / (rows * cols));
+    printf("Gpu res = %f\n", (float)sum / (rows * cols));
 }
 
 void cpuTenengrad(const Mat &src) {
@@ -101,7 +101,7 @@ void cpuTenengrad(const Mat &src) {
     timer.Stop();
 
     printf("Cpu elapsed time: %f\n", timer.Elapsed());
-    printf("res = %f\n", (float)sum / (rows * cols));
+    printf("Cpu res = %f\n", (float)sum / (rows * cols));
 }
 
 int main(int argc, char *argv[]) {
