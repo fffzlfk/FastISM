@@ -26,7 +26,7 @@ __global__ void SDMKernel(const cuda::PtrStep<T_in> src,
     if (x < cols - 1 && y < rows - 1) {
         dx = src(y, x) - src(y, x + 1);
         dy = src(y, x) - src(y + 1, x);
-        dst(y, x) = CudaMath::abs<int>(dx * dy);
+        dst(y, x) = CudaMath::abs<T_out>(dx * dy);
     }
 }
 
@@ -48,7 +48,7 @@ void gpuSDM(const Mat &h_oriImg) {
         <<<numBlocks, threadsPerBlock>>>(d_oriImg, d_grayImg, cols, rows);
     CHECK(cudaDeviceSynchronize());
 
-    SDMKernel<uchar, uint>
+    SDMKernel<uchar, int>
         <<<numBlocks, threadsPerBlock>>>(d_grayImg, d_dstImg, cols, rows);
     CHECK(cudaDeviceSynchronize());
     auto sum = Reduce<uint, ulonglong>(d_dstImg, BLOCK_SIZE);
