@@ -1,4 +1,6 @@
-#include "CPUBGR2Gray.h"
+#ifndef __SMD__
+#define __SMD__
+
 #include "CpuTimer.h"
 #include "CudaCheck.h"
 #include "CudaMath.h"
@@ -11,6 +13,8 @@
 #include <iostream>
 #include <opencv2/core/cuda_types.hpp>
 #include <opencv2/imgcodecs.hpp>
+
+namespace SMD {
 
 using namespace cv;
 
@@ -83,20 +87,6 @@ void cpuSDM(const Mat &src) {
     printf("Cpu elapsed time: %f\n", timer.Elapsed());
     printf("Cpu res = %f\n", (float)sum / (rows * cols));
 }
+} // namespace SMD
 
-int main(int argc, char *argv[]) {
-    if (argc != 2) {
-        printf(
-            "%s: Invalid number of command line arguments. Exiting program\n",
-            argv[0]);
-        printf("Usage: %s [image]", argv[0]);
-    }
-
-    Mat h_oriImg = imread(argv[1], IMREAD_COLOR);
-
-    gpuSDM(h_oriImg);
-
-    cpuSDM(h_oriImg);
-
-    return 0;
-}
+#endif
