@@ -1,7 +1,7 @@
 #ifndef __REDUCE_H__
 #define __REDUCE_H__
 
-#include <cooperative_groups.h>
+#include <cooperative_groups.h> 
 #include <opencv2/core/cuda.hpp>
 
 namespace cg = cooperative_groups;

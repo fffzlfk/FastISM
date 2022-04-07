@@ -9,11 +9,11 @@ int main(int argc, char *argv[]) {
         printf("Usage: %s [image]", argv[0]);
     }
 
-    Mat h_oriImg = imread(argv[1], IMREAD_COLOR);
+    cv::Mat h_oriImg = cv::imread(argv[1], cv::IMREAD_COLOR);
 
-    gpuLaplacian(h_oriImg);
+    Laplacian::gpuLaplacian(h_oriImg);
 
-    cpuLaplacian(h_oriImg);
+    Laplacian::cpuLaplacian(h_oriImg);
 
     return 0;
 }
