@@ -3,6 +3,7 @@
 
 #include "CudaCheck.h"
 
+namespace utils {
 struct GpuTimer {
     cudaEvent_t start;
     cudaEvent_t stop;
@@ -28,5 +29,5 @@ struct GpuTimer {
         return elapsed;
     }
 };
-
+} // namespace utils
 #endif /* __GPU_TIMER_H__ */

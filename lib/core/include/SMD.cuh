@@ -1,9 +1,9 @@
-#ifndef __SMD__
-#define __SMD__
+#ifndef __SMD_H__
+#define __SMD_H__
 
 #include "CpuTimer.h"
 #include "CudaCheck.h"
-#include "CudaMath.h"
+#include "CudaMath.cuh"
 #include "GPUBGR2Gray.cuh"
 #include "GpuTimer.cuh"
 #include "Reduce.cuh"
@@ -14,7 +14,7 @@
 #include <opencv2/core/cuda_types.hpp>
 #include <opencv2/imgcodecs.hpp>
 
-namespace SMD {
+namespace smd {
 
 using namespace cv;
 
@@ -30,7 +30,7 @@ __global__ void SDMKernel(const cuda::PtrStep<T_in> src,
     if (x < cols - 1 && y < rows - 1) {
         dx = src(y, x) - src(y, x + 1);
         dy = src(y, x) - src(y + 1, x);
-        dst(y, x) = CudaMath::abs<T_out>(dx * dy);
+        dst(y, x) = utils::abs<T_out>(dx * dy);
     }
 }
 
@@ -41,7 +41,7 @@ void gpuSDM(const Mat &h_oriImg) {
     dim3 threadsPerBlock(BLOCK_SIZE, BLOCK_SIZE, 1);
     dim3 numBlocks((cols + BLOCK_SIZE - 1) / BLOCK_SIZE,
                    (rows + BLOCK_SIZE - 1) / BLOCK_SIZE, 1);
-    GpuTimer timer;
+    utils::GpuTimer timer;
     timer.Start();
     cuda::GpuMat d_oriImg;
     d_oriImg.upload(h_oriImg);
@@ -66,7 +66,7 @@ void cpuSDM(const Mat &src) {
     Mat grayImage(src.size(), CV_8U, Scalar(0));
     ulonglong sum = 0;
 
-    CpuTimer timer;
+    utils::CpuTimer timer;
     timer.Start();
 
     const auto cols = src.cols;
@@ -87,6 +87,6 @@ void cpuSDM(const Mat &src) {
     printf("Cpu elapsed time: %f\n", timer.Elapsed());
     printf("Cpu res = %f\n", (float)sum / (rows * cols));
 }
-} // namespace SMD
+} // namespace smd
 
 #endif

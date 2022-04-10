@@ -5,7 +5,7 @@
 #include <thrust/device_ptr.h>
 #include <thrust/reduce.h>
 
-namespace ThrustHelper {
+namespace utils {
 template <typename T>
 struct step_functor : public thrust::unary_function<int, int> {
     int columns;
@@ -61,5 +61,5 @@ GpuMatEndItr(cv::cuda::GpuMat mat, int channel = 0) {
             thrust::make_counting_iterator(mat.rows * mat.cols),
             step_functor<T>(mat.cols, mat.step / sizeof(T), mat.channels())));
 }
-} // namespace ThrustHelper
+} // namespace utils
 #endif

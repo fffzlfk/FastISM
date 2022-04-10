@@ -3,6 +3,7 @@
 
 #include <sys/time.h>
 
+namespace utils {
 class CpuTimer {
   private:
     long startTime, endTime;
@@ -31,5 +32,5 @@ class CpuTimer {
         return elapsed;
     }
 };
-
+} // namespace utils
 #endif
