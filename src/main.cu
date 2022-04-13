@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <vector>
+#include "Laplacian.cuh"
 
 void file_chooser() {
     NFD_Init();
@@ -25,13 +27,17 @@ void file_chooser() {
 
 using namespace cycfi::elements;
 
-auto constexpr bkd_color = rgba(35, 35, 37, 255);
+auto constexpr bkd_color = rgba(35, 35, 35, 255);
 auto background = box(bkd_color);
 
 auto make_button() {
     auto add_button = button("Add");
     add_button.on_click = [](auto) { file_chooser(); };
     return add_button;
+}
+
+auto make_filelists() {
+    std::vector<element_ptr> ptr_list;
 }
 
 int main(int argc, char *argv[]) {

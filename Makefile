@@ -1,10 +1,10 @@
 build: configure
-	cmake --build build 
-configure:
-	cmake -B build -S . -DELEMENTS_HOST_UI_LIBRARY=gtk -DELEMENTS_BUILD_EXAMPLES=OFF
+	cmake --build build --parallel=4
 
-#  undefined reference to symbol 'FT_Get_PS_Font_Info'
-.PHONY: configure clean
+configure:
+	cmake -B build -GNinja -DELEMENTS_HOST_UI_LIBRARY=gtk -DELEMENTS_BUILD_EXAMPLES=OFF
+
+.PHONY: configure clean fmt
 
 clean:
 	rm build -r

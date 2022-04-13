@@ -76,8 +76,8 @@ void cpuLaplacian(const Mat &src) {
 
     CPU::BGR2Gray<uchar3, uchar>(src, grayImage, cols, rows);
 
-    for (size_t x = 1; x < cols - 1; x++) {
-        for (size_t y = 1; y < rows - 1; y++) {
+    for (auto x = 1; x < cols - 1; x++) {
+        for (auto y = 1; y < rows - 1; y++) {
             int nabla;
             nabla =
                 grayImage.at<uchar>(y, x + 1) + grayImage.at<uchar>(y, x - 1) +
