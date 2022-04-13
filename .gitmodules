@@ -1,0 +1,6 @@
+[submodule "elements"]
+  path = elements
+  url = https://github.com/cycfi/elements.git
+[submodule "nativefiledialog-extented"]
+  path = nativefiledialog-extended
+  url = https://github.com/btzy/nativefiledialog-extended.git
