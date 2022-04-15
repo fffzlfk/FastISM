@@ -1,5 +1,4 @@
-#ifndef __CPU_TIMER_H__
-#define __CPU_TIMER_H__
+#pragma once
 
 #include <sys/time.h>
 
@@ -33,4 +32,3 @@ class CpuTimer {
     }
 };
 } // namespace utils
-#endif

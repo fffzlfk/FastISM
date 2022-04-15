@@ -1,5 +1,4 @@
-#ifndef __GPU_MATH_H__
-#define __GPU_MATH_H__
+#pragma once
 
 namespace utils {
 template <typename T>
@@ -9,4 +8,3 @@ __device__ T abs(T x) {
     return x;
 }
 } // namespace utils
-#endif

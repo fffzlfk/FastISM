@@ -1,5 +1,4 @@
-#ifndef __THRUST_HELPER_H__
-#define __THRUST_HELPER_H__
+#pragma once
 
 #include <opencv2/core/cuda.hpp>
 #include <thrust/device_ptr.h>
@@ -62,4 +61,3 @@ GpuMatEndItr(cv::cuda::GpuMat mat, int channel = 0) {
             step_functor<T>(mat.cols, mat.step / sizeof(T), mat.channels())));
 }
 } // namespace utils
-#endif

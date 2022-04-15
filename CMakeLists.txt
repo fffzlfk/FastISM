@@ -14,4 +14,4 @@ add_subdirectory(nativefiledialog-extended)
 
 add_executable(main src/main.cu)
 set_target_properties(main PROPERTIES CUDA_ARCHITECTURES "50;72")
-target_link_libraries(main PRIVATE elements core nfd)
+target_link_libraries(main PRIVATE ui)

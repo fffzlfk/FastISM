@@ -1,5 +1,4 @@
-#ifndef __GPU_BGR2GRAY_H__
-#define __GPU_BGR2GRAY_H__
+#pragma once
 
 #include <opencv2/core/cuda.hpp>
 namespace GPU {
@@ -16,5 +15,3 @@ __global__ void BGR2Gray(const cv::cuda::PtrStep<T_in> src,
     }
 }
 } // namespace GPU
-
-#endif

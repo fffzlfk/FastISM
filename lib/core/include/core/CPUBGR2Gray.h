@@ -1,5 +1,4 @@
-#ifndef __CPU_BGR2GRAY_H__
-#define __CPU_BGR2GRAY_H__
+#pragma once
 
 #include <opencv4/opencv2/core/mat.hpp>
 
@@ -16,5 +15,3 @@ void BGR2Gray(const cv::Mat &src, cv::Mat &dst, size_t cols, size_t rows) {
     }
 }
 } // namespace CPU
-
-#endif

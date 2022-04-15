@@ -1,5 +1,4 @@
-#ifndef __CUDA_CHECK_H__
-#define __CUDA_CHECK_H__
+#pragma once
 
 #include <cstdio>
 
@@ -13,4 +12,3 @@
             exit(1);                                                           \
         }                                                                      \
     }
-#endif

@@ -1,9 +1,8 @@
-#ifndef __TENENGRAD_H__
-#define __TENENGRAD_H__
+#pragma once
 
 #include "GPUBGR2Gray.cuh"
-#include "GpuTimer.cuh"
-#include "Reduce.cuh"
+#include "utils/GpuTimer.cuh"
+#include "utils/Reduce.cuh"
 #include <cassert>
 #include <cmath>
 #include <cstdio>
@@ -106,4 +105,3 @@ void cpuTenengrad(const Mat &src) {
 }
 
 } // namespace tenengrad
-#endif

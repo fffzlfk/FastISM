@@ -1,5 +1,4 @@
-#ifndef __GPU_TIMER_H__
-#define __GPU_TIMER_H__
+#pragma once
 
 #include "CudaCheck.h"
 
@@ -30,4 +29,3 @@ struct GpuTimer {
     }
 };
 } // namespace utils
-#endif /* __GPU_TIMER_H__ */

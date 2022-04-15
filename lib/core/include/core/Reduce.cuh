@@ -1,8 +1,8 @@
-#ifndef __REDUCE_H__
-#define __REDUCE_H__
+#pragma once
 
 #include <cooperative_groups.h>
 #include <opencv2/core/cuda.hpp>
+#include "utils/CudaCheck.h"
 
 namespace cg = cooperative_groups;
 
@@ -66,5 +66,3 @@ T_out Reduce(const cv::cuda::GpuMat &src, const size_t BLOCK_SIZE) {
 
     return h_dst;
 }
-
-#endif
