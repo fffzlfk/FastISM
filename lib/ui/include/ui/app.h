@@ -66,15 +66,18 @@ int run(int argc, char *argv[]) {
                                           {full_extent, full_extent}};
 
     _view.content(
-        margin(
-            {10, 10, 10, 10},
-            vtile(htile(left_margin(10, limit(files_limits,
-                                              vscroller(hold(share(linked))))),
-                        left_margin(
-                            10,
-                            valign(0.5, vtile(top_margin(10, add_button),
-                                              top_margin(10, clear_button))))),
-                  margin({10, 10, 10, 10}, make_buttons(_view, files)))),
+        scale(1.5,
+              margin(
+                  {10, 10, 10, 10},
+                  vtile(htile(left_margin(
+                                  10, limit(files_limits,
+                                            vscroller(hold(share(linked))))),
+                              left_margin(
+                                  10,
+                                  valign(0.5,
+                                         vtile(top_margin(10, add_button),
+                                               top_margin(10, clear_button))))),
+                        margin({10, 10, 10, 10}, make_buttons(_view, files))))),
         background);
     _app.run();
     return 0;
