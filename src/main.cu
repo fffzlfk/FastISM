@@ -1,3 +1,3 @@
-#include "app.h"
+#include "ui/app.h"
 
 int main(int argc, char *argv[]) { return ui::run(argc, argv); }

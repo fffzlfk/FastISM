@@ -1,14 +1,15 @@
 #pragma once
 
 #include "GPUBGR2Gray.cuh"
+#include "Reduce.cuh"
 #include "utils/GpuTimer.cuh"
-#include "utils/Reduce.cuh"
 #include <cassert>
 #include <cmath>
 #include <cstdio>
 #include <iostream>
 #include <opencv2/core/cuda_types.hpp>
 #include <opencv2/imgcodecs.hpp>
+#include <tuple>
 
 namespace tenengrad {
 
@@ -37,7 +38,7 @@ __global__ void tenengradKernel(const cuda::PtrStep<T_in> src,
     }
 }
 
-void gpuTenengrad(const Mat &h_oriImg) {
+std::tuple<float, float> gpuTenengrad(const Mat &h_oriImg) {
     const size_t rows = h_oriImg.rows;
     const size_t cols = h_oriImg.cols;
 
@@ -45,7 +46,7 @@ void gpuTenengrad(const Mat &h_oriImg) {
     dim3 numBlocks((cols + BLOCK_SIZE - 1) / BLOCK_SIZE,
                    (rows + BLOCK_SIZE - 1) / BLOCK_SIZE, 1);
 
-    utils::GpuTimer timer;
+    ::utils::GpuTimer timer;
     timer.Start();
 
     cuda::GpuMat d_oriImg;
@@ -63,12 +64,17 @@ void gpuTenengrad(const Mat &h_oriImg) {
     auto sum = Reduce<uint, ulonglong>(d_dstImg, BLOCK_SIZE);
     timer.Stop();
 
-    printf("Gpu elapsed time: %f\n", timer.Elapsed());
-    printf("Gpu res = %f\n", (float)sum / (rows * cols));
+    auto time = timer.Elapsed();
+    auto res = static_cast<float>(sum) / (cols * rows);
+
+    printf("Gpu elapsed time: %f\n", time);
+    printf("Gpu res = %f\n", res);
+
+    return std::make_tuple(time, res);
 }
 
 void cpuTenengrad(const Mat &src) {
-    utils::CpuTimer timer;
+    ::utils::CpuTimer timer;
     timer.Start();
 
     Mat grayImage(src.size(), CV_8U, Scalar(0));

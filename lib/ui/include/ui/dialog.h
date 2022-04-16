@@ -7,16 +7,21 @@
 namespace ui {
 using namespace cycfi::elements;
 
+auto make_label(const std::string &res, const std::string &time) {
+    return share(label(res + "\t" + time));
+}
+
 auto dialog_content(Method method, const std::vector<std::string> &files) {
     vtile_composite comp;
+    comp.push_back(make_label("res", "time"));
+    comp.push_back(make_label("-----", "-----"));
 
     for (size_t i = 1; i < files.size(); i++) {
         auto [time, res] = compute(method, files, i);
-        comp.push_back(
-            share(label(std::to_string(res) + "     " + std::to_string(time))));
+        comp.push_back(make_label(std::to_string(res), std::to_string(time)));
     }
 
-    return simple_heading(margin({10, 10, 10, 10}, comp), "The Thraxian Legacy",
+    return simple_heading(margin({10, 10, 10, 10}, comp), MethodMap.at(method),
                           1.1);
 }
 

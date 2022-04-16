@@ -1,6 +1,8 @@
 #pragma once
 
 #include "core/Laplacian.cuh"
+#include "core/Tenengrad.cuh"
+#include "core/SMD.cuh"
 #include "method_types.h"
 #include <tuple>
 #include <vector>
@@ -13,7 +15,12 @@ auto compute(Method method, const std::vector<std::string> &files,
     switch (method) {
     case Method::Laplacian:
         return laplacian::gpuLaplacian(image);
+    case Method::Tenengrad:
+        return tenengrad::gpuTenengrad(image);
+    case Method::SMD:
+        return smd::gpuSMD(image);
+    default:
+        return std::make_tuple(.0f, .0f);
     }
-    return std::make_tuple(.0f, .0f);
 }
 } // namespace ui
