@@ -68,7 +68,7 @@ std::tuple<float, float> gpuLaplacian(const Mat &h_oriImg) {
     return std::make_tuple(time, res);
 }
 
-void cpuLaplacian(const Mat &src) {
+std::tuple<float, float> cpuLaplacian(const Mat &src) {
     Mat grayImage(src.size(), CV_8U, Scalar(0));
     ulonglong sum = 0;
 
@@ -92,7 +92,12 @@ void cpuLaplacian(const Mat &src) {
     }
     timer.Stop();
 
-    printf("Cpu elapsed time: %f\n", timer.Elapsed());
-    printf("Cpu res = %f\n", (float)sum / (rows * cols));
+    auto time = timer.Elapsed();
+    auto res = static_cast<float>(sum) / (rows * cols);
+
+    printf("Cpu elapsed time: %f\n", time);
+    printf("Cpu res = %f\n", res);
+
+    return std::make_tuple(time, res);
 }
 } // namespace laplacian

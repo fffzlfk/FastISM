@@ -4,14 +4,20 @@
 #include <unordered_map>
 namespace ui {
 enum class Method {
-    Tenengrad,
-    Laplacian,
-    SMD,
+    CPUTenengrad,
+    GPUTenengrad,
+    CPULaplacian,
+    GPULaplacian,
+    CPUSMD,
+    GPUSMD,
 };
 
 const std::unordered_map<Method, std::string> MethodMap = {
-    {Method::Tenengrad, "Tenengrad"},
-    {Method::Laplacian, "Laplacian"},
-    {Method::SMD, "SMD"},
+    {Method::CPUTenengrad, "CPU Tenengrad"},
+    {Method::GPUTenengrad, "GPU Tenengrad"},
+    {Method::CPULaplacian, "CPU Laplacian"},
+    {Method::GPULaplacian, "GPU Laplacian"},
+    {Method::CPUSMD, "CPU SMD"},
+    {Method::GPUSMD, "GPU SMD"},
 };
 } // namespace ui

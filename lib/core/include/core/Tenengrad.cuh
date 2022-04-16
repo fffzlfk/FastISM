@@ -73,7 +73,7 @@ std::tuple<float, float> gpuTenengrad(const Mat &h_oriImg) {
     return std::make_tuple(time, res);
 }
 
-void cpuTenengrad(const Mat &src) {
+std::tuple<float, float> cpuTenengrad(const Mat &src) {
     ::utils::CpuTimer timer;
     timer.Start();
 
@@ -106,8 +106,13 @@ void cpuTenengrad(const Mat &src) {
     }
     timer.Stop();
 
-    printf("Cpu elapsed time: %f\n", timer.Elapsed());
-    printf("Cpu res = %f\n", (float)sum / (rows * cols));
+    auto time = timer.Elapsed();
+    auto res = static_cast<float>(sum) / (cols * rows);
+
+    printf("Cpu elapsed time: %f\n", time);
+    printf("Cpu res = %f\n", res);
+
+    return std::make_tuple(time, res);
 }
 
 } // namespace tenengrad

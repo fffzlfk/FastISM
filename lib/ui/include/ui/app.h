@@ -53,6 +53,15 @@ int run(int argc, char *argv[]) {
         }
     };
 
+    auto clear_button = button("Clear");
+    clear_button.on_click = [&](bool) {
+        files.clear();
+        list_size = 1;
+        ptr_list.resize(list_size);
+        content.resize(list_size);
+        _view.refresh();
+    };
+
     constexpr view_limits files_limits = {{400, 200},
                                           {full_extent, full_extent}};
 
@@ -61,7 +70,10 @@ int run(int argc, char *argv[]) {
             {10, 10, 10, 10},
             vtile(htile(left_margin(10, limit(files_limits,
                                               vscroller(hold(share(linked))))),
-                        left_margin(10, add_button)),
+                        left_margin(
+                            10,
+                            valign(0.5, vtile(top_margin(10, add_button),
+                                              top_margin(10, clear_button))))),
                   margin({10, 10, 10, 10}, make_buttons(_view, files)))),
         background);
     _app.run();
