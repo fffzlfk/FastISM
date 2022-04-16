@@ -79,8 +79,8 @@ void cpuSMD(const Mat &src) {
 
     CPU::BGR2Gray<uchar3, uchar>(src, grayImage, cols, rows);
 
-    for (size_t x = 0; x < cols - 1; x++) {
-        for (size_t y = 0; y < rows - 1; y++) {
+    for (auto x = 0; x < cols - 1; x++) {
+        for (auto y = 0; y < rows - 1; y++) {
             long dx, dy;
             dx = grayImage.at<uchar>(y, x) - grayImage.at<uchar>(y, x + 1);
             dy = grayImage.at<uchar>(y, x) - grayImage.at<uchar>(y + 1, x);

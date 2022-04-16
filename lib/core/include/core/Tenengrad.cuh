@@ -85,8 +85,8 @@ void cpuTenengrad(const Mat &src) {
 
     CPU::BGR2Gray<uchar3, uchar>(src, grayImage, cols, rows);
 
-    for (size_t x = 1; x < cols - 1; x++) {
-        for (size_t y = 1; y < rows - 1; y++) {
+    for (auto x = 1; x < cols - 1; x++) {
+        for (auto y = 1; y < rows - 1; y++) {
             int dx, dy;
             dx = (-1 * grayImage.at<uchar>(y - 1, x - 1)) +
                  (-2 * grayImage.at<uchar>(y, x - 1)) +

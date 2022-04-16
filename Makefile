@@ -1,5 +1,5 @@
 build: configure
-	cmake --build build --parallel=4
+	cmake --build build
 
 configure:
 	cmake -B build -GNinja -DELEMENTS_HOST_UI_LIBRARY=gtk -DELEMENTS_BUILD_EXAMPLES=OFF

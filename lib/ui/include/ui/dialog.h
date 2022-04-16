@@ -8,7 +8,7 @@ namespace ui {
 using namespace cycfi::elements;
 
 auto make_label(const std::string &res, const std::string &time) {
-    return share(label(res + "\t" + time));
+    return share(label(res + "      " + time));
 }
 
 auto dialog_content(Method method, const std::vector<std::string> &files) {
