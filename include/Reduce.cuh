@@ -1,11 +1,8 @@
 #ifndef __REDUCE_H__
 #define __REDUCE_H__
 
-#include <cooperative_groups.h>
 #include <numeric>
 #include <opencv2/core/cuda.hpp>
-
-namespace cg = cooperative_groups;
 
 constexpr size_t BLOCK_SIZE = 16;
 
