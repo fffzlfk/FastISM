@@ -16,15 +16,18 @@ __global__ void reduce(const cv::cuda::PtrStep<T_in> src, T_out *dst,
 
     auto tid = threadIdx.x;
     auto i = threadIdx.x + blockDim.x * blockIdx.x;
-
     auto y = i / cols;
     auto x = i % cols;
 
-    s_data[tid] = src(y, x);
+    auto ni = threadIdx.x + blockDim.x * 2 * blockIdx.x;
+    auto ny = ni / cols;
+    auto nx = ni % cols;
+
+    // 在赋值的时候执行第一层reduce，避免了一半线程浪费
+    s_data[tid] = src(y, x) + src(ny, nx);
     __syncthreads();
 
     for (auto s = blockDim.x >> 1; s > 0; s >>= 1) {
-        // 避免了`bank conflicts`
         if (tid < s) {
             s_data[tid] += s_data[tid + s];
         }
@@ -45,8 +48,8 @@ T_out Reduce(const cv::cuda::GpuMat &src) {
     auto size = cols * rows;
 
     dim3 reduceThreadsPerBlock(BLOCK_SIZE * BLOCK_SIZE);
-    dim3 reduceNumBlocks((size + BLOCK_SIZE * BLOCK_SIZE - 1) /
-                         (BLOCK_SIZE * BLOCK_SIZE));
+    dim3 reduceNumBlocks((size + BLOCK_SIZE * BLOCK_SIZE * 2 - 1) /
+                         (BLOCK_SIZE * BLOCK_SIZE * 2));
 
     T_out *h_dst = new T_out[size];
 
