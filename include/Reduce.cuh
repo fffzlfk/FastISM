@@ -24,6 +24,8 @@ __global__ void reduce(const cv::cuda::PtrStep<T_in> src, T_out *dst,
     __syncthreads();
 
     for (size_t s = 1; s < blockDim.x; s *= 2) {
+        // 这样`if`分支中，线程是连续的，降低了`warp divergence`
+        // 同时消除了取模操作
         auto index = 2 * s * tid;
         if (index < blockDim.x) {
             s_data[index] += s_data[index + s];
