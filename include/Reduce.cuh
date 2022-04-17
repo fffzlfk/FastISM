@@ -1,12 +1,19 @@
 #ifndef __REDUCE_H__
 #define __REDUCE_H__
 
-#include <cooperative_groups.h>
 #include <opencv2/core/cuda.hpp>
 
-namespace cg = cooperative_groups;
-
 constexpr unsigned FULL_MASK = 0xffffffff;
+
+template<typename T>
+__device__ void warpReduce(volatile T *s_data, int tid) {
+    s_data[tid] += s_data[tid + 32];
+    s_data[tid] += s_data[tid + 16];
+    s_data[tid] += s_data[tid + 8];
+    s_data[tid] += s_data[tid + 4];
+    s_data[tid] += s_data[tid + 2];
+    s_data[tid] += s_data[tid + 1];
+}
 
 template <typename T_in, typename T_out>
 __global__ void reduce(const cv::cuda::PtrStep<T_in> src, T_out *dst,
@@ -22,22 +29,19 @@ __global__ void reduce(const cv::cuda::PtrStep<T_in> src, T_out *dst,
     s_data[tid] = src(y, x);
     __syncthreads();
 
-    for (size_t s = blockDim.x >> 1; s >= 32; s >>= 1) {
+    for (size_t s = blockDim.x >> 1; s > 32; s >>= 1) {
         if (tid < s) {
             s_data[tid] += s_data[tid + s];
         }
         __syncthreads();
     }
 
-    T_out temp = s_data[tid];
-    cg::thread_block_tile<32> g =
-        cg::tiled_partition<32>(cg::this_thread_block());
-    for (size_t s = g.size() >> 1; s >= 1; s >>= 1) {
-        temp += g.shfl_down(temp, s);
+    if (tid < 32) {
+        warpReduce<T_out>(s_data, tid);
     }
 
     if (tid == 0) {
-        atomicAdd(dst, temp);
+        atomicAdd(dst, s_data[0]);
     }
 }
 

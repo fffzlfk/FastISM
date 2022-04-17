@@ -2,7 +2,7 @@ build: configure
 	cmake --build build
 
 configure:
-	cmake -B build
+	cmake -B build -GNinja
 
 .PHONY: configure clean
 
