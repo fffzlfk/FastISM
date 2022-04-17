@@ -9,6 +9,20 @@ namespace cg = cooperative_groups;
 
 constexpr size_t BLOCK_SIZE = 16;
 
+// `warp`的大小为32，`warp`中是`SIMT`策略，
+// 也就是单指令多线程，所以无需考虑同步问题，
+// 使用`volatile`防止寄存器缓存（编译器优化）
+// 我们可以直接展开
+template <typename T>
+__device__ void warpReduce(volatile T *s_data, int tid) {
+    s_data[tid] += s_data[tid + 32];
+    s_data[tid] += s_data[tid + 16];
+    s_data[tid] += s_data[tid + 8];
+    s_data[tid] += s_data[tid + 4];
+    s_data[tid] += s_data[tid + 2];
+    s_data[tid] += s_data[tid + 1];
+}
+
 template <typename T_in, typename T_out>
 __global__ void reduce(const cv::cuda::PtrStep<T_in> src, T_out *dst,
                        size_t cols) {
@@ -27,11 +41,15 @@ __global__ void reduce(const cv::cuda::PtrStep<T_in> src, T_out *dst,
     s_data[tid] = src(y, x) + src(ny, nx);
     __syncthreads();
 
-    for (auto s = blockDim.x >> 1; s > 0; s >>= 1) {
+    for (auto s = blockDim.x >> 1; s > 32; s >>= 1) {
         if (tid < s) {
             s_data[tid] += s_data[tid + s];
         }
         __syncthreads();
+    }
+
+    if (tid < 32) {
+        warpReduce(s_data, tid);
     }
 
     if (tid == 0) {
