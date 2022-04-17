@@ -24,9 +24,8 @@ __global__ void reduce(const cv::cuda::PtrStep<T_in> src, T_out *dst,
     __syncthreads();
 
     for (size_t s = 1; s < blockDim.x; s *= 2) {
-        auto index = 2 * s * tid;
-        if (index < blockDim.x) {
-            s_data[index] += s_data[index + s];
+        if (tid % (2 * s) == 0) {
+            s_data[tid] += s_data[tid + s];
         }
         __syncthreads();
     }
