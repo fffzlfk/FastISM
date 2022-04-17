@@ -2,16 +2,17 @@
 #define __REDUCE_H__
 
 #include <cooperative_groups.h>
+#include <numeric>
 #include <opencv2/core/cuda.hpp>
 
 namespace cg = cooperative_groups;
 
-constexpr unsigned FULL_MASK = 0xffffffff;
+constexpr size_t BLOCK_SIZE = 16;
 
 template <typename T_in, typename T_out>
 __global__ void reduce(const cv::cuda::PtrStep<T_in> src, T_out *dst,
                        size_t cols) {
-    extern __shared__ T_out s_data[];
+    __shared__ T_out s_data[BLOCK_SIZE * BLOCK_SIZE];
 
     auto tid = threadIdx.x;
     auto i = threadIdx.x + blockDim.x * blockIdx.x;
@@ -22,29 +23,23 @@ __global__ void reduce(const cv::cuda::PtrStep<T_in> src, T_out *dst,
     s_data[tid] = src(y, x);
     __syncthreads();
 
-    for (size_t s = blockDim.x >> 1; s >= 32; s >>= 1) {
-        if (tid < s) {
-            s_data[tid] += s_data[tid + s];
+    for (size_t s = 1; s < blockDim.x; s *= 2) {
+        auto index = 2 * s * tid;
+        if (index < blockDim.x) {
+            s_data[index] += s_data[index + s];
         }
         __syncthreads();
     }
 
-    T_out temp = s_data[tid];
-    cg::thread_block_tile<32> g =
-        cg::tiled_partition<32>(cg::this_thread_block());
-    for (size_t s = g.size() >> 1; s >= 1; s >>= 1) {
-        temp += g.shfl_down(temp, s);
-    }
-
     if (tid == 0) {
-        atomicAdd(dst, temp);
+        dst[blockIdx.x] = s_data[0];
     }
 }
 
 using ulonglong = unsigned long long;
 
 template <typename T_in, typename T_out>
-T_out Reduce(const cv::cuda::GpuMat &src, const size_t BLOCK_SIZE) {
+T_out Reduce(const cv::cuda::GpuMat &src) {
     auto cols = src.cols;
     auto rows = src.rows;
     auto size = cols * rows;
@@ -53,18 +48,24 @@ T_out Reduce(const cv::cuda::GpuMat &src, const size_t BLOCK_SIZE) {
     dim3 reduceNumBlocks((size + BLOCK_SIZE * BLOCK_SIZE - 1) /
                          (BLOCK_SIZE * BLOCK_SIZE));
 
-    T_out h_dst = 0;
+    T_out *h_dst = new T_out[size];
+
     T_out *d_dst;
-    CHECK(cudaMalloc((void **)&d_dst, sizeof(T_out)));
-    CHECK(cudaMemcpy(d_dst, &h_dst, sizeof(T_out), cudaMemcpyHostToDevice));
+    CHECK(cudaMalloc((void **)&d_dst, size * sizeof(T_out)));
+    CHECK(
+        cudaMemcpy(d_dst, h_dst, size * sizeof(T_out), cudaMemcpyHostToDevice));
     reduce<T_in, T_out>
-        <<<reduceNumBlocks, reduceThreadsPerBlock,
-           BLOCK_SIZE * BLOCK_SIZE * sizeof(T_out)>>>(src, d_dst, cols);
+        <<<reduceNumBlocks, reduceThreadsPerBlock>>>(src, d_dst, cols);
     CHECK(cudaDeviceSynchronize());
-    CHECK(cudaMemcpy(&h_dst, d_dst, sizeof(T_out), cudaMemcpyDeviceToHost));
+
+    CHECK(
+        cudaMemcpy(h_dst, d_dst, size * sizeof(T_out), cudaMemcpyDeviceToHost));
     CHECK(cudaFree(d_dst));
 
-    return h_dst;
+    auto ret = std::accumulate(h_dst, h_dst + reduceNumBlocks.x, 0,
+                               std::plus<T_out>());
+    delete[] h_dst;
+    return ret;
 }
 
 #endif

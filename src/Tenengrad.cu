@@ -14,8 +14,6 @@
 
 using namespace cv;
 
-constexpr size_t BLOCK_SIZE = 16;
-
 template <typename T_in, typename T_out>
 __global__ void tenengradKernel(const cuda::PtrStep<T_in> src,
                                 cuda::PtrStep<T_out> dst, size_t cols,
@@ -60,7 +58,7 @@ void gpuTenengrad(const Mat &h_oriImg) {
     tenengradKernel<uchar, int>
         <<<numBlocks, threadsPerBlock>>>(d_grayImg, d_dstImg, cols, rows);
     CHECK(cudaDeviceSynchronize());
-    auto sum = Reduce<uint, ulonglong>(d_dstImg, BLOCK_SIZE);
+    auto sum = Reduce<uint, ulonglong>(d_dstImg);
     timer.Stop();
 
     printf("Gpu elapsed time: %f\n", timer.Elapsed());
