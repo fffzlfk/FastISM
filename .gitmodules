@@ -1,6 +1,8 @@
 [submodule "elements"]
   path = elements
   url = https://github.com/cycfi/elements.git
+  branch = gui
 [submodule "nativefiledialog-extented"]
   path = nativefiledialog-extended
   url = https://github.com/btzy/nativefiledialog-extended.git
+  branch = gui
