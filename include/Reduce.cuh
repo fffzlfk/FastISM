@@ -46,7 +46,7 @@ T_out Reduce(const cv::cuda::GpuMat &src) {
     dim3 reduceNumBlocks((size + BLOCK_SIZE * BLOCK_SIZE - 1) /
                          (BLOCK_SIZE * BLOCK_SIZE));
 
-    T_out h_dst;
+    T_out h_dst = 0;
     T_out *d_dst;
     CHECK(cudaMalloc((void **)&d_dst, sizeof(T_out)));
     CHECK(
