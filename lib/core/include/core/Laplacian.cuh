@@ -27,11 +27,11 @@ __global__ void LaplacianKernel(const cuda::PtrStep<T_in> src,
     size_t x = threadIdx.x + blockDim.x * blockIdx.x;
     size_t y = threadIdx.y + blockDim.y * blockIdx.y;
 
-    T_out nabla;
+    T_out lx, ly;
     if (x > 0 && x < cols - 1 && y > 0 && y < rows - 1) {
-        nabla = src(y - 1, x) + src(y + 1, x) + src(y, x - 1) + src(y, x + 1) -
-                4 * src(y, x);
-        dst(y, x) = ::utils::abs<T_out>(nabla);
+        lx = ::utils::abs<T_out>(src(y, x + 1) + src(y, x - 1) - 2 * src(y, x));
+        ly = ::utils::abs<T_out>(src(y + 1, x) + src(y - 1, x) - 2 * src(y, x));
+        dst(y, x) = lx + ly;
     }
 }
 
@@ -82,12 +82,12 @@ std::tuple<float, float> cpuLaplacian(const Mat &src) {
 
     for (auto x = 1; x < cols - 1; x++) {
         for (auto y = 1; y < rows - 1; y++) {
-            int nabla;
-            nabla =
-                grayImage.at<uchar>(y, x + 1) + grayImage.at<uchar>(y, x - 1) +
-                grayImage.at<uchar>(y - 1, x) + grayImage.at<uchar>(y + 1, x) -
-                4 * grayImage.at<uchar>(y, x);
-            sum += abs(nabla);
+            int lx, ly;
+            lx = grayImage.at<uchar>(y, x + 1) + grayImage.at<uchar>(y, x - 1) -
+                 2 * grayImage.at<uchar>(y, x);
+            ly = grayImage.at<uchar>(y + 1, x) + grayImage.at<uchar>(y - 1, x) -
+                 2 * grayImage.at<uchar>(y, x);
+            sum += abs(lx) + abs(ly);
         }
     }
     timer.Stop();
