@@ -56,7 +56,7 @@ std::tuple<float, float> gpuLaplacian(const Mat &h_oriImg) {
     LaplacianKernel<uchar, int>
         <<<numBlocks, threadsPerBlock>>>(d_grayImg, d_dstImg, cols, rows);
     CHECK(cudaDeviceSynchronize());
-    auto sum = Reduce<uint, ulonglong>(d_dstImg, BLOCK_SIZE);
+    auto sum = Reduce<uint, ulonglong>(d_dstImg);
     timer.Stop();
 
     float time = timer.Elapsed();

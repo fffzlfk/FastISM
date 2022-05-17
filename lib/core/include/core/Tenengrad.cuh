@@ -61,7 +61,7 @@ std::tuple<float, float> gpuTenengrad(const Mat &h_oriImg) {
     tenengradKernel<uchar, int>
         <<<numBlocks, threadsPerBlock>>>(d_grayImg, d_dstImg, cols, rows);
     CHECK(cudaDeviceSynchronize());
-    auto sum = Reduce<uint, ulonglong>(d_dstImg, BLOCK_SIZE);
+    auto sum = Reduce<uint, ulonglong>(d_dstImg);
     timer.Stop();
 
     auto time = timer.Elapsed();

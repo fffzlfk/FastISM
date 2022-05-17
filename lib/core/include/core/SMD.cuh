@@ -55,7 +55,7 @@ std::tuple<float, float> gpuSMD(const Mat &h_oriImg) {
     SMDKernel<uchar, int>
         <<<numBlocks, threadsPerBlock>>>(d_grayImg, d_dstImg, cols, rows);
     CHECK(cudaDeviceSynchronize());
-    auto sum = Reduce<uint, ulonglong>(d_dstImg, BLOCK_SIZE);
+    auto sum = Reduce<uint, ulonglong>(d_dstImg);
     timer.Stop();
 
     auto time = timer.Elapsed();
