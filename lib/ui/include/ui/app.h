@@ -55,8 +55,8 @@ int run(int argc, char *argv[]) {
 
     auto clear_button = button("Clear");
     clear_button.on_click = [&](bool) {
-        files.clear();
         list_size = 1;
+        files.resize(1);
         ptr_list.resize(list_size);
         content.resize(list_size);
         _view.refresh();

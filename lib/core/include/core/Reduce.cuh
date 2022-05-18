@@ -24,13 +24,16 @@ __global__ void reduce(const cv::cuda::PtrStep<T_in> src, T_out *dst,
     __shared__ T_out s_data[BLOCK_SIZE * BLOCK_SIZE];
 
     auto tid = threadIdx.x;
-    auto i = threadIdx.x + blockDim.x * blockIdx.x;
-
+    auto i = threadIdx.x + blockDim.x * 2 * blockIdx.x;
     auto y = i / cols;
     auto x = i % cols;
 
+    auto ni = i + blockDim.x;
+    auto ny = ni / cols;
+    auto nx = ni % cols;
+
     // 在赋值的时候执行第一层reduce，避免了一半线程浪费
-    s_data[tid] = src(y, x);
+    s_data[tid] = src(y, x) + src(ny, nx);
     __syncthreads();
 
     for (size_t s = blockDim.x >> 1; s > 32; s >>= 1) {
