@@ -1,28 +1,21 @@
-## 编译
+# FastISM
+
+A real-time image sharpness measurement system based on CUDA.
+
+My undergraduate graduation project.
+
+## deps
+
+- CMake && Ninja
+- CUDA environment
+- OpenCV(With CUDA module)
+
+## build
 
 ```bash
+git clone --recursive https://github.com/fffzlfk/FastISM && cd FastISM
+
 make
+
+./build/main
 ```
-
-## 测试单张图片
-
-### SMD
-
-```bash
-./build/SMD ./images/test.jpg
-```
-
-### Tenengrad
-
-```bash
-./build/Tenengrad ./images/test.jpg
-```
-
-## 测试样例（老师给的20张）
-
-```bash
-./test.sh SMD
-./test.sh Tenengrad
-```
-
-1-20 先递增后递减
