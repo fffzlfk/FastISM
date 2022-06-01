@@ -12,7 +12,7 @@ namespace ui {
 auto compute(Method method, const std::vector<std::string> &files,
              const size_t index) {
     auto filepath = files[index];
-    auto image = cv::imread(filepath);
+    auto image = cv::imread(filepath, cv::IMREAD_COLOR);
     switch (method) {
     case Method::CPULaplacian:
         return laplacian::cpuLaplacian(image);

@@ -14,6 +14,7 @@ auto background = box(bkd_color);
 
 std::vector<std::string> files;
 
+// 绘制文件列表项目
 auto draw_cell(const size_t index) {
     auto text = files[index];
     return align_left(label(text));
