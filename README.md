@@ -10,7 +10,7 @@ My undergraduate graduation project.
 - CUDA environment
 - OpenCV(With CUDA module)
 
-## build
+## build & run
 
 ```bash
 git clone --recursive https://github.com/fffzlfk/FastISM && cd FastISM
