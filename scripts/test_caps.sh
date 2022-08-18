@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 bin=./build/$1
 $bin images/img28.bmp
 $bin images/img1.bmp
