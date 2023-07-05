@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(demo CXX CUDA)
+project(FastISM CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CUDA_STANDARD 17)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CUDA_COMPILE_WHOLE_COMPILATION ON)
 add_compile_options(-Wall -Wextra)
